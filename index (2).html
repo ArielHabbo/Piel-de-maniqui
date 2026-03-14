@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piel de Maniquí · habbo.es</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+  :root {
+    --bg: #1a1a2e; --panel: #16213e; --card: #0f3460;
+    --accent: #e94560; --accent2: #f5a623; --teal: #00b4d8;
+    --text: #eaeaea; --muted: #8899aa; --border: rgba(255,255,255,0.08);
+    --spotlight: rgba(0,180,216,0.12); --green: #00c896;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; background-image: radial-gradient(ellipse at 20% 0%, rgba(233,69,96,0.12) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(0,180,216,0.1) 0%, transparent 50%); }
+
+  /* HEADER */
+  .header { background: var(--panel); border-bottom: 1px solid var(--border); padding: 24px 32px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .header-avatar { width: 80px; height: 110px; image-rendering: pixelated; filter: drop-shadow(0 4px 12px rgba(0,180,216,0.4)); }
+  .header-title { font-family: 'Fredoka One', cursive; font-size: 28px; margin-bottom: 4px; }
+  .header-title span { color: var(--teal); }
+  .header-sub { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+  .badges-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .badge { background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 700; }
+  .badge.accent { background: rgba(233,69,96,0.15); border-color: rgba(233,69,96,0.4); color: #ff8fa3; }
+  .badge.teal { background: rgba(0,180,216,0.15); border-color: rgba(0,180,216,0.4); color: var(--teal); }
+  .badge.gold { background: rgba(245,166,35,0.15); border-color: rgba(245,166,35,0.4); color: var(--accent2); }
+  .badge.green { background: rgba(0,200,150,0.15); border-color: rgba(0,200,150,0.4); color: var(--green); }
+
+  /* SYNC BAR */
+  .sync-bar { background: var(--panel); border-bottom: 1px solid var(--border); padding: 10px 32px; display: flex; align-items: center; gap: 12px; font-size: 13px; flex-wrap: wrap; }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+  .sync-dot.syncing { background: var(--teal); animation: pulse 1s infinite; }
+  .sync-dot.ok { background: var(--green); }
+  .sync-dot.err { background: var(--accent); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .sync-text { color: var(--muted); }
+  .sync-text b { color: var(--text); }
+  .sync-btn { background: rgba(0,180,216,0.1); border: 1px solid rgba(0,180,216,0.3); border-radius: 6px; color: var(--teal); font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700; padding: 4px 12px; cursor: pointer; transition: all 0.2s; margin-left: auto; }
+  .sync-btn:hover { background: rgba(0,180,216,0.2); }
+  .sync-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* NEW USERS BANNER */
+  .new-banner { background: rgba(233,69,96,0.1); border: 1px solid rgba(233,69,96,0.3); border-radius: 8px; margin: 16px 32px 0; padding: 12px 16px; display: none; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .new-banner-title { color: #ff8fa3; font-weight: 800; font-size: 14px; }
+  .new-banner-names { color: var(--text); font-size: 13px; }
+  .dismiss-btn { margin-left: auto; background: transparent; border: 1px solid rgba(233,69,96,0.4); border-radius: 6px; color: #ff8fa3; font-family: 'Nunito', sans-serif; font-size: 12px; padding: 4px 10px; cursor: pointer; }
+
+  /* CONTROLS */
+  .controls { padding: 16px 32px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+  .search-box { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Nunito', sans-serif; font-size: 14px; padding: 8px 16px; outline: none; width: 220px; transition: border-color 0.2s; }
+  .search-box:focus { border-color: var(--teal); }
+  .search-box::placeholder { color: var(--muted); }
+  .sort-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; padding: 8px 14px; cursor: pointer; transition: all 0.2s; }
+  .sort-btn:hover, .sort-btn.active { background: rgba(0,180,216,0.15); border-color: rgba(0,180,216,0.4); color: var(--teal); }
+  .count-label { color: var(--muted); font-size: 14px; margin-left: auto; }
+  .count-label strong { color: var(--text); }
+
+  /* GRID */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 16px; padding: 28px 32px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; position: relative; animation: fadeIn 0.3s ease both; }
+  .card:hover { transform: translateY(-4px) scale(1.02); border-color: rgba(0,180,216,0.5); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .card-spotlight { background: var(--spotlight); padding: 16px 8px 8px; display: flex; justify-content: center; align-items: flex-end; min-height: 100px; position: relative; }
+  .card-spotlight::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:60px; height:100%; background:radial-gradient(ellipse at 50% 0%, rgba(0,180,216,0.2) 0%, transparent 70%); pointer-events:none; }
+  .card-avatar { width: 64px; height: 90px; image-rendering: pixelated; position: relative; z-index: 1; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
+  .card-floor { width:80px; height:10px; background:rgba(255,255,255,0.06); border-radius:50%; position:absolute; bottom:4px; left:50%; transform:translateX(-50%); }
+  .card-name { background: var(--panel); border-top: 1px solid var(--border); padding: 8px 6px; text-align: center; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-date { text-align: center; font-size: 10px; color: var(--muted); padding: 2px 6px 6px; background: var(--panel); }
+  .new-badge { position:absolute; top:6px; right:6px; background:var(--accent); color:white; font-size:9px; font-weight:800; padding:2px 6px; border-radius:10px; letter-spacing:0.5px; text-transform:uppercase; z-index:2; }
+
+  .empty { display:none; text-align:center; color:var(--muted); padding:60px; font-size:16px; }
+  .footer { text-align:center; padding:24px; color:var(--muted); font-size:13px; border-top:1px solid var(--border); }
+  .footer a { color:var(--teal); text-decoration:none; }
+  @media (max-width:600px) { .header,.controls,.grid,.sync-bar { padding:16px; } .new-banner { margin: 12px 16px 0; } .grid { grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:10px; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img class="header-avatar"
+    src="https://www.habbo.es/habbo-imaging/avatarimage?figure=hd-6361-1&size=l&direction=2&head_direction=2&action=std"
+    onerror="this.src='https://www.habbo.com/habbo-imaging/avatarimage?figure=hd-6361-1&size=l&direction=2&head_direction=2&action=std'" />
+  <div class="header-info">
+    <div class="header-title">Piel de <span>Maniquí</span></div>
+    <div class="header-sub">Usuarios de habbo.es usando la prenda · hd-6361</div>
+    <div class="badges-row">
+      <span class="badge teal">🎮 habbo.es</span>
+      <span class="badge gold" id="badge-total">⭐ 121 usuarios</span>
+      <span class="badge accent" id="badge-new" style="display:none">🆕 0 nuevos</span>
+      <span class="badge green" id="badge-sync">🔄 Auto-sync ON</span>
+    </div>
+  </div>
+</div>
+
+<div class="sync-bar">
+  <div class="sync-dot syncing" id="sync-dot"></div>
+  <span class="sync-text" id="sync-text">Conectando con Habbowidgets...</span>
+  <button class="sync-btn" id="sync-btn" onclick="syncNow()" disabled>↻ Sincronizar</button>
+</div>
+
+<div class="new-banner" id="new-banner">
+  <span class="new-banner-title">🆕 ¡Nuevos usuarios detectados!</span>
+  <span class="new-banner-names" id="new-banner-names"></span>
+  <button class="dismiss-btn" onclick="dismissBanner()">✕</button>
+</div>
+
+<div class="controls">
+  <input type="text" class="search-box" id="search" placeholder="🔍 Buscar usuario..." oninput="applyFilters()" />
+  <button class="sort-btn active" onclick="sortBy('fecha')" id="btn-fecha">📅 Fecha</button>
+  <button class="sort-btn" onclick="sortBy('nombre')" id="btn-nombre">🔤 Nombre</button>
+  <button class="sort-btn" onclick="sortBy('nuevos')" id="btn-nuevos">🆕 Nuevos primero</button>
+  <span class="count-label">Mostrando <strong id="showing">0</strong> de <strong id="total-count">0</strong></span>
+</div>
+
+<div class="grid" id="grid"></div>
+<div class="empty" id="empty">No se encontraron usuarios</div>
+
+<div class="footer">
+  Fuente: <a href="https://www.habbowidgets.com/habbo/closet/es/hd-6361" target="_blank">Habbowidgets</a> ·
+  Actualizado automáticamente al cargar
+</div>
+
+<script>
+// ─── BASE KNOWN USERS (saved list) ───────────────────────────────────────────
+const BASE_USERS = ["-Tony","Edgarp3","Javiertrap","Anderson666",".-puRo-.","Zyklon","Weest..","LuisGiov","Ferisaac507","-Kaisa-","mrquz","yeti013","Devil-Cavalier","@Haku-","AlexGrande12","Rovira-","yitan57",".Nutria.","pepelush","Vunn","matcha!",",SantyDap",".!!Sunflower..!","Nyzxx","Noryx","effie1813","Niralis","NosoyJulian","MonsterCat12","-Aday","Nadezka_02","Torturado","Chescofrann",".leberry.","Moonsal","_K-OS_",".Douce.","lToowers",".Eternity.","vandijk,","Ryah","Tormenta!","alexisduvio:v","lauka",".faaicrii.","missbee","Heliols","FrankDacosta1","JoeKhalifa","-yuzuf_","Roo!","Paipass","fakk.","18kgold",".:Lou:.","-edith",",Fernandaaa","-Marenna-","Sandy.","RickGrimes_TWD","Taisse","Sheccid,","aguitas93",":-Nadezka_02","Coutier","BRISY","ArgEmi","MIIB","Mada.","ElitaGB.",",Meri","Softiee","Foo","Unprety","jaokuz",",cira",",Mian","TOKIO.YEAGER","mariaale2735","-plebe","G3_N15",".xCa",":=ChUyp21=:","Sudi","Adric.","Michelan2","eun","Aeth","Gloomie","o_opla","maruLandia182","Parn","Stanza.","Barbas:.","jerudmide","Doll",":Sara:","Roberto2832",".Scarlett","Allow","claudia132ga","Efrain,","zun","0paL","Stroke-","Easytools","xrajev","-Nahuel.R-","Nessa!","Mario,","lGamal","chiricuasm3","Eh_Mentiraaa","-Julieth-","Calzo12XD","::Ivy.Queen::","JoinyCyruz","PalaciosF3R","lyonking7","Glory_girl","Flordelot0","-Andrei","-Gatito-","FranShock","Mentalite","Djason","flavia_alee","dnar:","daysilovexoo","-Irenee-!","Storm,-",":.:Zyyon:.","6naughty9","ares-916","ZoeeSSJ","710304",",bloodline","JoyBoy-","bobba","Soly:","LauraDeus","Lycan","Glowy,","Haf?","Desintoxicado","brighten","ryo!","Oversy","Amy_Antonella","Astraia,","babiiiii",".Bizcocho.",".:Caro:.","NoLimits","Psycodelic","dumpling,","Alma-Mia","madelinAGENTE",".vf","JaaviBm","Almu.","Valourette","Killzone9797",".Gin","Palomita.","Sakuer","Haven,","XZL","mirannda","nicolaslionel",".:Anny::.","Lopeziaz",".:AnA:.","seijuro","GABRIEL!?","colombian--o",":.Art.","Badd!e","-CArlOsKaleL-","myss","paolalili","Fileng1","Giusepe","lalo90monsterOT","mrii","_Jesusitoo_","Carlizx","-.HBK.-","Elyth",":.:Zyyon:.","Akssddd.","El_Misho.","4ty!","seting","Cute",".Elf.","Valeria","Litusfer","Robinson27","www.","kata599","-JosueT","w!gu3",":.::Master:.","Nanu,",",Wil-"];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let USERS = BASE_USERS.map(n => ({ n, d: "13/03/2026", nw: false }));
+let currentSort = 'fecha';
+const STORAGE_KEY = 'habbo_maniqui_users';
+
+// Load from localStorage if available
+function loadSaved() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length >= BASE_USERS.length) {
+        USERS = parsed;
+        return true;
+      }
+    }
+  } catch(e) {}
+  return false;
+}
+
+function saveToDisk() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(USERS)); } catch(e) {}
+}
+
+// ─── HABBOWIDGETS FETCH via Claude AI ─────────────────────────────────────────
+async function fetchFromHabbowidgets() {
+  const prompt = `Go to this URL and return ONLY a plain text list of Habbo usernames, one per line, nothing else. No explanations, no "View Habinfo", just the usernames extracted from the page. URL: https://www.habbowidgets.com/habbo/closet/es/hd-6361
+
+The page shows a list like:
+username View Habinfo
+username2 View Habinfo
+
+Return ONLY the usernames, one per line.`;
+
+  const resp = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 2000,
+      tools: [{ type: "web_search_20250305", name: "web_search" }],
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+
+  if (!resp.ok) throw new Error(`API error ${resp.status}`);
+  const data = await resp.json();
+
+  // Extract text from response
+  let text = '';
+  for (const block of data.content) {
+    if (block.type === 'text') text += block.text + '\n';
+  }
+
+  // If tool was used, do follow-up
+  if (data.stop_reason === 'tool_use' && !text.trim()) {
+    const toolBlocks = data.content.filter(b => b.type === 'tool_use');
+    const toolResults = toolBlocks.map(b => ({
+      type: "tool_result", tool_use_id: b.id,
+      content: "Extract and return ONLY the list of usernames from the search results, one per line."
+    }));
+
+    const resp2 = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 2000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        messages: [
+          { role: "user", content: prompt },
+          { role: "assistant", content: data.content },
+          { role: "user", content: toolResults }
+        ]
+      })
+    });
+    const data2 = await resp2.json();
+    for (const block of data2.content) {
+      if (block.type === 'text') text += block.text + '\n';
+    }
+  }
+
+  // Parse usernames from text
+  const names = text.split('\n')
+    .map(l => l.replace(/View Habinfo/gi, '').trim())
+    .filter(l => l.length > 0 && l.length < 40 && !l.includes('http') && !l.startsWith('//') && !l.startsWith('#'));
+
+  return names;
+}
+
+// ─── SYNC LOGIC ───────────────────────────────────────────────────────────────
+async function syncNow() {
+  const dot = document.getElementById('sync-dot');
+  const text = document.getElementById('sync-text');
+  const btn = document.getElementById('sync-btn');
+
+  dot.className = 'sync-dot syncing';
+  text.innerHTML = '<b>Consultando Habbowidgets...</b> esto puede tomar unos segundos';
+  btn.disabled = true;
+
+  try {
+    const liveNames = await fetchFromHabbowidgets();
+
+    if (!liveNames || liveNames.length < 10) {
+      throw new Error('Pocos resultados, posible bloqueo');
+    }
+
+    const knownNames = new Set(USERS.map(u => u.n.toLowerCase().trim()));
+    const today = new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'2-digit', year:'numeric' });
+    const newUsers = liveNames.filter(n => !knownNames.has(n.toLowerCase().trim()));
+
+    if (newUsers.length > 0) {
+      newUsers.forEach(n => USERS.push({ n, d: today, nw: true }));
+      saveToDisk();
+      showNewBanner(newUsers);
+      document.getElementById('badge-new').textContent = `🆕 ${newUsers.length} nuevos`;
+      document.getElementById('badge-new').style.display = '';
+    }
+
+    document.getElementById('badge-total').textContent = `⭐ ${USERS.length} usuarios`;
+    dot.className = 'sync-dot ok';
+    text.innerHTML = `<b>Sincronizado</b> · ${liveNames.length} en Habbowidgets · ${newUsers.length > 0 ? `<span style="color:#ff8fa3">${newUsers.length} nuevos detectados</span>` : 'sin cambios'} · ${new Date().toLocaleTimeString()}`;
+    applyFilters();
+
+  } catch(e) {
+    dot.className = 'sync-dot err';
+    text.innerHTML = `<b style="color:var(--accent)">Error al sincronizar:</b> ${e.message} — usando lista guardada`;
+  }
+
+  btn.disabled = false;
+}
+
+function showNewBanner(names) {
+  const banner = document.getElementById('new-banner');
+  document.getElementById('new-banner-names').textContent = names.join(', ');
+  banner.style.display = 'flex';
+  sortBy('nuevos');
+}
+
+function dismissBanner() {
+  document.getElementById('new-banner').style.display = 'none';
+  // Mark all as not new after dismissing
+  USERS.forEach(u => u.nw = false);
+  saveToDisk();
+  applyFilters();
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function avatarUrl(name) {
+  return `https://www.habbo.es/habbo-imaging/avatarimage?user=${encodeURIComponent(name)}&size=m&direction=2&head_direction=2&action=std`;
+}
+
+function renderCards(list) {
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  document.getElementById('showing').textContent = list.length;
+  document.getElementById('total-count').textContent = USERS.length;
+  document.getElementById('badge-total').textContent = `⭐ ${USERS.length} usuarios`;
+
+  if (!list.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  grid.innerHTML = list.map((u, i) => `
+    <div class="card" style="animation-delay:${Math.min(i*0.015,1.5)}s"
+         onclick="window.open('https://www.habbowidgets.com/habinfo/es/${encodeURIComponent(u.n)}','_blank')">
+      ${u.nw ? '<span class="new-badge">nuevo</span>' : ''}
+      <div class="card-spotlight">
+        <img class="card-avatar"
+          src="${avatarUrl(u.n)}"
+          onerror="this.src='https://www.habbo.com/habbo-imaging/avatarimage?user=${encodeURIComponent(u.n)}&size=m&direction=2&head_direction=2&action=std'"
+          loading="lazy" />
+        <div class="card-floor"></div>
+      </div>
+      <div class="card-name">${u.n}</div>
+      <div class="card-date">${u.d}</div>
+    </div>
+  `).join('');
+}
+
+function sortBy(type) {
+  currentSort = type;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + type).classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.toLowerCase();
+  let list = q ? USERS.filter(u => u.n.toLowerCase().includes(q)) : [...USERS];
+  if (currentSort === 'nombre') list.sort((a,b) => a.n.localeCompare(b.n));
+  else if (currentSort === 'nuevos') list.sort((a,b) => b.nw - a.nw);
+  renderCards(list);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+loadSaved();
+applyFilters();
+// Auto-sync on load
+syncNow();
+</script>
+</body>
+</html>
